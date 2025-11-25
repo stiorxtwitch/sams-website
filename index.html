@@ -11,8 +11,8 @@
       --border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08);
     }
     body{
-      font-family:Inter,system-ui;
-      margin:0;background:url('https://i.imgur.com/A6V1lhN.jpg') no-repeat center center fixed;
+      font-family:Inter,system-ui;margin:0;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') no-repeat center center fixed;
       background-size:cover;color:#1f1f1f;position:relative;min-height:100vh
     }
     body::before{
@@ -34,47 +34,51 @@
     .btn{
       display:inline-block;background:var(--primary);color:white;
       padding:14px 32px;border-radius:12px;font-weight:600;font-size:1.1rem;
-      text-decoration:none;transition:0.2s;box-shadow:var(--shadow);
-      margin:12px
+      text-decoration:none;transition:0.2s;box-shadow:var(--shadow);margin:12px;cursor:pointer
     }
     .btn:hover{background:var(--primary-dark);transform:translateY(-2px)}
     .btn.secondary{
       background:transparent;border:2px solid var(--primary);color:var(--primary)
     }
     .btn.secondary:hover{background:var(--primary-light);color:var(--primary-dark)}
-    .cards{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-      gap:24px;margin-top:60px
-    }
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px}
     .card{
       background:rgba(255,255,255,0.92);padding:28px;border-radius:16px;
-      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
-      backdrop-filter:blur(10px)
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;backdrop-filter:blur(10px)
     }
     .card h3{font-size:1.5rem;color:var(--primary);margin-bottom:16px}
     .card img{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:16px}
-    footer{
-      text-align:center;padding:40px 20px;background:rgba(0,0,0,0.7);color:white;
-      margin-top:80px
+    footer{text-align:center;padding:40px 20px;background:rgba(0,0,0,0.7);color:white;margin-top:80px}
+
+    /* === MODALE DE CONNEXION === */
+    .modal{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
+      align-items:center;justify-content:center;z-index:1000
     }
-    @media(max-width:768px){
-      .hero h1{font-size:2.5rem}
-      header{flex-direction:column;text-align:center;gap:12px}
+    .modal-content{
+      background:rgba(255,255,255,0.95);padding:32px;border-radius:16px;
+      width:90%;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,0.3);text-align:center
     }
+    .modal input{
+      width:100%;padding:14px;margin:12px 0;border-radius:10px;
+      border:1px solid var(--border);font-size:16px
+    }
+    .modal input:focus{outline:none;border-color:var(--primary)}
+    .error{color:var(--primary-dark);margin:10px 0;font-weight:600}
+    @media(max-width:768px){.hero h1{font-size:2.5rem}}
   </style>
 </head>
 <body>
 
-  <!-- Header identique à ton intranet -->
   <header>
     <img src="https://i.imgur.com/N1tQTgU.png" alt="Logo SAMS">
     <h1>San Andreas Medical Services</h1>
-    <div></div> <!-- espace pour futur bouton connexion -->
+    <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">
+      Connexion personnel
+    </button>
   </header>
 
   <div class="container">
-
-    <!-- Section Hero -->
     <div class="hero">
       <h1>SAMS</h1>
       <p>
@@ -82,52 +86,95 @@
         Intervention rapide, soins professionnels, réanimation et transport sanitaire 24/7.
       </p>
       <div>
-        <a href="https://votre-serveur.com/demande-sams" class="btn">Appeler le 911 (civils)</a>
-        <a href="login.html" class="btn secondary">Espace personnel SAMS</a>
+        <a href="#" class="btn">Appeler le 911 (civils)</a>
       </div>
     </div>
 
-    <!-- Cartes d’information -->
     <div class="cards">
       <div class="card">
-        <img src="https://i.imgur.com/HRFYn7l.jpg" alt="Ambulance SAMS">
+        <img src="https://i.imgur.com/HRFYn7l.jpg" alt="Ambulance">
         <h3>Intervention rapide</h3>
-        <p>Équipe déployée en moins de 3 minutes sur tout le comté de San Andreas.</p>
+        <p>Équipe déployée en moins de 3 minutes partout dans le comté.</p>
       </div>
       <div class="card">
-        <img src="https://i.imgur.com/a6mTPCg.jpg" alt="Équipe médicale">
+        <img src="https://i.imgur.com/a6mTPCg.jpg" alt="Équipe">
         <h3>Personnel qualifié</h3>
-        <p>Médecins, infirmiers et ambulanciers formés au roleplay médical réaliste.</p>
+        <p>Médecins, infirmiers et ambulanciers formés au roleplay médical.</p>
       </div>
       <div class="card">
-        <img src="https://i.imgur.com/NwO9e.jpg" alt="Hôpital Pillbox">
+        <img src="https://i.imgur.com/NwO9e.jpg" alt="Hôpital">
         <h3>Infrastructures modernes</h3>
-        <p>Hôpital Pillbox Hill & Sandy Shores équipés pour tous les soins d’urgence.</p>
+        <p>Hôpital Pillbox Hill & Sandy Shores équipés pour tous les soins.</p>
       </div>
     </div>
 
-    <!-- Section candidatures -->
-    <div style="text-align:center;margin-top:80px">
-      <h2 style="font-size:2.5rem;color:var(--primary);margin-bottom:24px">
-        Rejoignez le SAMS
-      </h2>
-      <p style="font-size:1.2rem;max-width:700px;margin:0 auto 32px">
-        Devenez ambulancier, infirmier ou médecin et sauvez des vies tous les jours.
-      </p>
+    <div style="text-align:center;margin:80px 0">
+      <h2 style="font-size:2.5rem;color:var(--primary);margin-bottom:24px">Rejoignez le SAMS</h2>
       <a href="https://discord.gg/votreserveur" class="btn" style="font-size:1.3rem;padding:16px 40px">
         Postuler sur Discord
       </a>
     </div>
-
   </div>
 
   <footer>
     <p>© 2025 SAMS - San Andreas Medical Services | Serveur FiveM RP</p>
-    <p>
-      Discord : discord.gg/votreserveur • 
-      Site intranet : <a href="login.html" style="color:#e11d48">Connexion personnel</a>
-    </p>
   </footer>
+
+  <!-- === MODALE DE CONNEXION === -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h2 style="color:var(--primary);margin-bottom:20px">Connexion personnel SAMS</h2>
+      <input type="text" id="username" placeholder="Nom d'utilisateur" autocomplete="username">
+     -center>
+      <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
+      <button class="btn" onclick="login()">Se connecter</button>
+      <p class="error" id="errorMsg"></p>
+      <button style="margin-top:20px;background:transparent;border:none;color:#666;cursor:pointer" 
+              onclick="document.getElementById('loginModal').style.display='none'">
+        Fermer
+      </button>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    
+    const supabase = createClient(
+      'https://gktawbaposndfxijkxdk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+    )
+
+    window.login = async () => {
+      const user = document.getElementById('username').value.trim()
+      const pass = document.getElementById('password').value
+
+      if (!user || !pass) {
+        document.getElementById('errorMsg').textContent = 'Remplis les deux champs'
+        return
+      }
+
+      const { data, error } = await supabase
+        .from('login')
+        .select('*')
+        .eq('user', user)
+        .eq('password', pass)
+        .single()
+
+      if (error || !data) {
+        document.getElementById('errorMsg').textContent = 'Identifiants incorrects'
+      } else {
+        // Connexion réussie → redirige vers l’intranet (ou autre page)
+        localStorage.setItem('sams_user', JSON.stringify(data))
+        window.location.href = 'gestion.html' // ← mets ici le nom de ta vraie page intranet
+      }
+    }
+
+    // Touche Entrée = connexion
+    document.getElementById('password').addEventListener('keypress', e => {
+      if (e.key === 'Enter') login()
+    })
+  </script>
 
 </body>
 </html>
