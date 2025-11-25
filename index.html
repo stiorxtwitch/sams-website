@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAMS - San Andreas Medical Services | FiveM RP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    header {
+      position: relative;
+      height: 100vh;
+      background-image: url('https://i.imgur.com/8RxIDpO.jpg'); /* Image Imgur: ambulance GTA V/FiveM (de galerie GTA5 RP phone bg) */
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .subtitle {
+      font-size: 1.5rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: #fff;
+      color: #ff0000;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    main {
+      padding: 4rem 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: #fff;
+      color: #ff0000;
+      padding: 2rem;
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    footer {
+      background: rgba(0, 0, 0, 0.8);
+      text-align: center;
+      padding: 2rem;
+      margin-top: 4rem;
+    }
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      .section { padding: 2rem; }
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="hero-content fade-in">
+      <h1>SAMS</h1>
+      <p class="subtitle">San Andreas Medical Services</p>
+      <p style="font-size: 1.2rem; margin-bottom: 2rem;">Urgences médicales 24/7 dans Los Santos – Sauver des vies, une intervention à la fois.</p>
+      <a href="#demande" class="cta-btn">Appeler les secours</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section fade-in" id="demande">
+      <h2 style="font-size: 2.5rem; margin-bottom: 2rem; color: #fff;">Urgence médicale ?</h2>
+      <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">En jeu, composez le 911 pour contacter le SAMS. Nous intervenons pour tous les accidents, blessures et situations critiques à Los Santos.</p>
+      <div class="grid">
+        <div class="card">
+          <img src="https://i.imgur.com/HRFYn7l.jpg" alt="Ambulance SAMS en action à Los Santos" /> <!-- Image Imgur: Custom wallpaper FiveM RP (de galerie HRFYn7l) -->
+          <h3>Intervention rapide</h3>
+          <p>Équipés pour les réanimations et transports d'urgence.</p>
+        </div>
+        <div class="card">
+          <img src="https://i.imgur.com/a6mTPCg.jpg" alt="Équipe SAMS sur une scène d'accident" /> <!-- Image Imgur: Loading screen FiveM avec thème médical (de galerie a6mTPCg, adapté GTA) -->
+          <h3>Personnel qualifié</h3>
+          <p>Médecins, infirmiers et ambulanciers RP dédiés.</p>
+        </div>
+        <div class="card">
+          <img src="https://i.imgur.com/NwO9e.jpg" alt="Hôpital Los Santos SAMS" /> <!-- Image Imgur: HD Wallpaper GTA V (de galerie NwO9e, hôpital/urgence) -->
+          <h3>Soins complets</h3>
+          <p>Du terrain à l'hôpital : nous couvrons tout San Andreas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section fade-in">
+      <h2 style="font-size: 2.5rem; margin-bottom: 2rem; color: #fff;">Rejoignez-nous</h2>
+      <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem;">Devenez membre du SAMS et sauvez des vies dans notre serveur FiveM RP.</p>
+      <a href="#" class="cta-btn">Postuler maintenant</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 SAMS - San Andreas Medical Services | Serveur FiveM RP</p>
+    <p>Discord : discord.gg/votreserveur | In-game : /sams</p>
+  </footer>
+
+  <script>
+    // Animation simple au scroll
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.section').forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
