@@ -10,62 +10,66 @@
       --primary:#e11d48;--primary-light:#fee2e2;--primary-dark:#991b1b;
       --border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08);
     }
+    *{margin:0;padding:0;box-sizing:border-box}
     body{
-      font-family:Inter,system-ui;margin:0;
-      background:url('https://i.imgur.com/A6V1lhN.jpg') no-repeat center center fixed;
-      background-size:cover;color:#1f1f1f;position:relative;min-height:100vh
+      font-family:Inter,system-ui;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      color:#1f1f1f;min-height:100vh;position:relative
     }
     body::before{
-      content:"";position:fixed;top:0;left:0;right:0;bottom:0;
+      content:"";position:fixed;inset:0;
       background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1
     }
     header{
       background:linear-gradient(90deg,var(--primary),var(--primary-dark));
-      color:white;padding:16px 24px;display:flex;align-items:center;
-      justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);
-      position:relative;z-index:10
+      color:white;padding:14px 20px;display:flex;align-items:center;
+      justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10;position:relative
     }
-    header img{height:58px;border-radius:14px;box-shadow:0 3px 10px rgba(0,0,0,0.2)}
-    header h1{margin:0;font-size:22px;font-weight:700}
-    .container{max-width:1200px;margin:40px auto;padding:20px;position:relative;z-index:5}
-    .hero{text-align:center;padding:60px 20px}
-    .hero h1{font-size:3.5rem;color:var(--primary);margin-bottom:16px}
-    .hero p{font-size:1.3rem;max-width:800px;margin:0 auto 32px;line-height:1.7}
+    header img{height:56px;border-radius:12px}
+    header h1{font-size:21px;font-weight:700;margin:0 12px}
+    #userStatus{font-size:15px;display:flex;align-items:center;gap:12px}
+    .container{max-width:1200px;margin:40px auto;padding:20px}
+    .hero{text-align:center;padding:50px 20px}
+    .hero h1{font-size:3.6rem;color:var(--primary);margin-bottom:12px}
+    .hero p{font-size:1.3rem;max-width:800px;margin:0 auto 30px;line-height:1.7}
     .btn{
-      display:inline-block;background:var(--primary);color:white;
-      padding:14px 32px;border-radius:12px;font-weight:600;font-size:1.1rem;
-      text-decoration:none;transition:0.2s;box-shadow:var(--shadow);margin:12px;cursor:pointer
+      background:var(--primary);color:white;padding:14px 32px;border-radius:12px;
+      font-weight:600;font-size:1.1rem;text-decoration:none;display:inline-block;
+      margin:10px;box-shadow:var(--shadow);cursor:pointer;transition:0.2s
     }
     .btn:hover{background:var(--primary-dark);transform:translateY(-2px)}
     .btn.secondary{
       background:transparent;border:2px solid var(--primary);color:var(--primary)
     }
-    .btn.secondary:hover{background:var(--primary-light);color:var(--primary-dark)}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px}
+    .cards{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px
+    }
     .card{
-      background:rgba(255,255,255,0.92);padding:28px;border-radius:16px;
-      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;backdrop-filter:blur(10px)
+      background:rgba(255,255,255,0.94);padding:28px;border-radius:16px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center
     }
-    .card h3{font-size:1.5rem;color:var(--primary);margin-bottom:16px}
-    .card img{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-bottom:16px}
-    footer{text-align:center;padding:40px 20px;background:rgba(0,0,0,0.7);color:white;margin-top:80px}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:16px}
+    .card h3{font-size:1.5rem;color:var(--primary);margin-bottom:12px}
+    footer{
+      text-align:center;padding:40px 20px;background:rgba(0,0,0,0.8);color:white;margin-top:80px
+    }
 
-    /* === MODALE DE CONNEXION === */
-    .modal{
-      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);
-      align-items:center;justify-content:center;z-index:1000
-    }
+    /* MODALE */
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);
+      align-items:center;justify-content:center;z-index:1000}
     .modal-content{
-      background:rgba(255,255,255,0.95);padding:32px;border-radius:16px;
-      width:90%;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,0.3);text-align:center
+      background:#fff;padding:32px;border-radius:16px;width:90%;max-width:400px;
+      text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3)
     }
     .modal input{
-      width:100%;padding:14px;margin:12px 0;border-radius:10px;
-      border:1px solid var(--border);font-size:16px
+      width:100%;padding:14px;margin:10px 0;border-radius:10px;
+      border:1px solid #ddd;font-size:16px
     }
-    .modal input:focus{outline:none;border-color:var(--primary)}
-    .error{color:var(--primary-dark);margin:10px 0;font-weight:600}
-    @media(max-width:768px){.hero h1{font-size:2.5rem}}
+    .error{color:#c00;margin:10px 0;font-weight:600}
+    @media(max-width:768px){
+      .hero h1{font-size:2.6rem}
+      header{flex-direction:column;text-align:center;gap:10px}
+    }
   </style>
 </head>
 <body>
@@ -73,33 +77,27 @@
   <header>
     <img src="https://i.imgur.com/N1tQTgU.png" alt="Logo SAMS">
     <h1>San Andreas Medical Services</h1>
-    <button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">
-      Connexion personnel
-    </button>
+    <div id="userStatus"></div>
   </header>
 
   <div class="container">
     <div class="hero">
       <h1>SAMS</h1>
-      <p>
-        Le service médical d’urgence officiel de Los Santos.<br>
-        Intervention rapide, soins professionnels, réanimation et transport sanitaire 24/7.
-      </p>
-      <div>
-        <a href="#" class="btn">Appeler le 911 (civils)</a>
-      </div>
+      <p>Le service médical d’urgence officiel de Los Santos.<br>
+         Intervention rapide • Soins professionnels • Réanimation 24/7</p>
+      <a href="#" class="btn">Appeler le 911 (civils)</a>
     </div>
 
     <div class="cards">
       <div class="card">
         <img src="https://i.imgur.com/HRFYn7l.jpg" alt="Ambulance">
         <h3>Intervention rapide</h3>
-        <p>Équipe déployée en moins de 3 minutes partout dans le comté.</p>
+        <p>Équipe déployée en moins de 3 minutes sur tout le comté.</p>
       </div>
       <div class="card">
         <img src="https://i.imgur.com/a6mTPCg.jpg" alt="Équipe">
         <h3>Personnel qualifié</h3>
-        <p>Médecins, infirmiers et ambulanciers formés au roleplay médical.</p>
+        <p>Médecins, infirmiers et ambulanciers formés au RP médical.</p>
       </div>
       <div class="card">
         <img src="https://i.imgur.com/NwO9e.jpg" alt="Hôpital">
@@ -120,23 +118,20 @@
     <p>© 2025 SAMS - San Andreas Medical Services | Serveur FiveM RP</p>
   </footer>
 
-  <!-- === MODALE DE CONNEXION === -->
+  <!-- MODALE CONNEXION -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
       <h2 style="color:var(--primary);margin-bottom:20px">Connexion personnel SAMS</h2>
-      <input type="text" id="username" placeholder="Nom d'utilisateur" autocomplete="username">
-     -center>
-      <input type="password" id="password" placeholder="Mot de passe" autocomplete="current-password">
+      <input type="text" id="username" placeholder="Nom d'utilisateur">
+      <input type="password" id="password" placeholder="Mot de passe">
       <button class="btn" onclick="login()">Se connecter</button>
       <p class="error" id="errorMsg"></p>
-      <button style="margin-top:20px;background:transparent;border:none;color:#666;cursor:pointer" 
-              onclick="document.getElementById('loginModal').style.display='none'">
-        Fermer
-      </button>
+      <button style="margin-top:15px;background:none;border:none;color:#666;cursor:pointer"
+              onclick="document.getElementById('loginModal').style.display='none'">Fermer</button>
     </div>
   </div>
 
-  <!-- Supabase -->
+  <!-- SUPABASE + LOGIQUE -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     
@@ -145,11 +140,29 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
     )
 
-    window.login = async () => {
-      const user = document.getElementById('username').value.trim()
-      const pass = document.getElementById('password').value
+    const userStatus = document.getElementById('userStatus')
 
-      if (!user || !pass) {
+    // Vérifie si déjà connecté
+    const saved = localStorage.getItem('sams_user')
+    if (saved) {
+      const user = JSON.parse(saved)
+      userStatus.innerHTML = `
+        Connecté : <strong>${user.user}</strong> (${user.grade || '—'})
+        <button onclick="logout()" style="background:#dc2626;color:white;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;margin-left:10px;font-size:14px">
+          Déconnexion
+        </button>
+      `
+    } else {
+      userStatus.innerHTML = `<button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">
+        Connexion personnel
+      </button>`
+    }
+
+    window.login = async () => {
+      const username = document.getElementById('username').value.trim()
+      const password = document.getElementById('password').value
+
+      if (!username || !password) {
         document.getElementById('errorMsg').textContent = 'Remplis les deux champs'
         return
       }
@@ -157,24 +170,28 @@
       const { data, error } = await supabase
         .from('login')
         .select('*')
-        .eq('user', user)
-        .eq('password', pass)
+        .eq('user', username)
+        .eq('password', password)
         .single()
 
       if (error || !data) {
         document.getElementById('errorMsg').textContent = 'Identifiants incorrects'
       } else {
-        // Connexion réussie → redirige vers l’intranet (ou autre page)
         localStorage.setItem('sams_user', JSON.stringify(data))
-        window.location.href = 'gestion.html' // ← mets ici le nom de ta vraie page intranet
+        document.getElementById('loginModal').style.display = 'none'
+        location.reload() // recharge proprement la page
       }
     }
 
-    // Touche Entrée = connexion
-    document.getElementById('password').addEventListener('keypress', e => {
+    window.logout = () => {
+      localStorage.removeItem('sams_user')
+      location.reload()
+    }
+
+    // Entrée = connexion
+    document.getElementById('password')?.addEventListener('keypress', e => {
       if (e.key === 'Enter') login()
     })
   </script>
-
 </body>
 </html>
