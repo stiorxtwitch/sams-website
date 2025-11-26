@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SAMS - Effectifs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#e11d48;--primary-light:#fee2e2;--primary-dark:#991b1b;
+      --border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:Inter,system-ui;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      color:#1f1f1f;min-height:100vh;position:relative
+    }
+    body::before{
+      content:"";position:fixed;inset:0;
+      background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1
+    }
+    header{
+      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+      color:white;padding:14px 20px;display:flex;align-items:center;
+      justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10;position:relative
+    }
+    header img{height:56px;border-radius:12px}
+    header h1{font-size:21px;font-weight:700;margin:0 12px}
+    #userInfo{font-size:15px;display:flex;align-items:center;gap:12px}
+    .container{max-width:1000px;margin:40px auto;padding:20px}
+    h1{text-align:center;color:var(--primary);margin:20px 0 40px;font-size:2.8rem}
+    .effectif-list{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px
+    }
+    .membre{
+      background:rgba(255,255,255,0.95);padding:20px;border-radius:14px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
+      transition:0.2s
+    }
+    .membre:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(225,29,72,0.15)}
+    .membre .nom{
+      font-size:1.4rem;font-weight:700;color:var(--primary);margin-bottom:8px
+    }
+    .membre .grade{
+      background:var(--primary);color:white;padding:6px 16px;border-radius:20px;
+      font-size:0.9rem;font-weight:600;display:inline-block
+    }
+    .no-access{
+      text-align:center;padding:100px 20px;color:#666;font-size:1.3rem
+    }
+    footer{text-align:center;padding:40px 20px;background:rgba(0,0,0,0.8);color:white;margin-top:80px}
+    @media(max-width:768px){
+      h1{font-size:2.3rem}
+      .effectif-list{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://i.imgur.com/N1tQTgU.png" alt="Logo SAMS">
+    <h1>San Andreas Medical Services</h1>
+    <div id="userInfo"></div>
+  </header>
+
+  <div class="container">
+    <h1>Effectifs SAMS</h1>
+    <div id="effectifsContent"></div>
+  </div>
+
+  <footer>
+    <p>© 2025 SAMS - San Andreas Medical Services</p>
+  </footer>
+
+  <!-- SUPABASE + PROTECTION -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    
+    const supabase = createClient(
+      'https://gktawbaposndfxijkxdk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+    )
+
+    const userInfo = document.getElementById('userInfo')
+    const content = document.getElementById('effectifsContent')
+    const currentUser = localStorage.getItem('sams_user')
+
+    // === PROTECTION D'ACCÈS ===
+    if (!currentUser) {
+      content.innerHTML = '<div class="no-access">Accès refusé. <a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
+      return
+    }
+
+    const user = JSON.parse(currentUser)
+    if (user.permission !== 'sams' && user.permission !== 'admin') {
+      content.innerHTML = '<div class="no-access">Tu n’as pas l’autorisation de voir les effectifs.<br><a href="index.html" style="color:var(--primary)">← Retour</a></div>'
+      return
+    }
+
+    // === AFFICHAGE UTILISATEUR CONNECTÉ ===
+    userInfo.innerHTML = `
+      Connecté : <strong>${user.user}</strong> (${user.grade || '—'})
+      <button onclick="localStorage.removeItem('sams_user');location.href='index.html'" 
+              style="background:#dc2626;color:white;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;margin-left:10px;font-size:14px">
+        Déconnexion
+      </button>
+    `
+
+    // === CHARGEMENT DES EFFECTIFS ===
+    async function loadEffectifs() {
+      const { data, error } = await supabase
+        .from('login')
+        .select('user, grade, permission')
+        .in('permission', ['sams', 'admin'])
+        .order('user', { ascending: true })
+
+      if (error || !data || data.length === 0) {
+        content.innerHTML = '<p style="text-align:center;color:#666">Aucun membre trouvé.</p>'
+        return
+      }
+
+      const html = data.map(m => `
+        <div class="membre">
+          <div class="nom">${m.user}</div>
+          <div class="grade">${m.grade || 'Sans grade'}</div>
+        </div>
+      `).join('')
+
+      content.innerHTML = `<div class="effectif-list">${html}</div>`
+    }
+
+    loadEffectifs()
+  </script>
+
+</body>
+</html>
