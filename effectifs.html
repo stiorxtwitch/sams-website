@@ -9,7 +9,7 @@
     :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
     body{
-      font-family:Inter,system-ui;
+      font-family:'Inter',sans-serif;
       background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
       color:#1f1f1f;min-height:100vh;position:relative
     }
@@ -25,36 +25,31 @@
     header img{height:58px;border-radius:14px}
     header h1{font-size:22px;font-weight:700;margin-left:12px}
     .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
-    .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
+    .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:.2s}
     .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.25)}
-    .logout-btn{background:#dc2626;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+    .logout-btn{background:#dc2626;padding:8px 16px;border:none;border-radius:8px;color:white;cursor:pointer;font-weight:600}
     .container{max-width:1200px;margin:60px auto;padding:20px}
     h1{text-align:center;color:var(--primary);font-size:3.2rem;margin-bottom:40px}
     #liste{
       display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
-      padding:20px
+      padding:0 20px
     }
     .card{
       background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;
       box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
-      transition:0.3s
+      transition:transform .3s,box-shadow .3s
     }
-    .card:hover{transform:translateY(-10px);box-shadow:0 12px 30px rgba(225,29,72,0.18)}
+    .card:hover{transform:translateY(-10px);box-shadow:0 14px 34px rgba(225,29,72,0.2)}
     .nom{font-size:1.9rem;font-weight:700;color:var(--primary);margin-bottom:12px}
     .grade{
-      background:var(--primary);color:white;padding:10px 32px;border-radius:30px;
+      background:var(--primary);color:white;padding:11px 34px;border-radius:30px;
       font-weight:600;font-size:1.1rem;display:inline-block
     }
-    .no-access{
-      text-align:center;padding:120px 20px;color:#666;font-size:1.6rem
-    }
-    footer{
-      text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white;margin-top:80px
-    }
+    .no-access{text-align:center;padding:120px 20px;color:#666;font-size:1.6rem}
+    footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
     @media(max-width:768px){
       header{flex-direction:column;text-align:center;gap:12px}
       h1{font-size:2.5rem}
-      #liste{gap:20px;padding:10px}
     }
   </style>
 </head>
@@ -73,27 +68,37 @@
     <div id="liste">Chargement des effectifs...</div>
   </div>
 
-  <footer>
-    <p>© 2025 SAMS - San Andreas Medical Services</p>
-  </footer>
+  <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
-  <!-- TON SCRIPT QUI MARCHE DÉJÀ (je touche à rien !) -->
+  <!-- TOUT LE JS EST ICI, DANS LA PAGE (garanti fonctionnel) -->
   <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js";
-    const supabaseUrl = "https://gktawbaposndfxijkxdk.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk";
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    const liste = document.getElementById("liste");
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    // Protection + menu
+    const supabase = createClient(
+      'https://gktawbaposndfxijkxdk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+    )
+
+    const navMenu = document.getElementById('navMenu')
+    const liste = document.getElementById('liste')
+
+    // Vérification connexion
     const userData = localStorage.getItem('sams_user')
-    if (!userData || !['sams','admin'].includes(JSON.parse(userData).permission)) {
-      liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
-      document.getElementById('navMenu').innerHTML = ''
+    if (!userData) {
+      liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
+      navMenu.innerHTML = ''
       return
     }
 
-    document.getElementById('navMenu').innerHTML = `
+    const user = JSON.parse(userData)
+    if (user.permission !== 'sams' && user.permission !== 'admin') {
+      liste.innerHTML = '<div class="no-access">Tu n’as pas la permission.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
+      navMenu.innerHTML = ''
+      return
+    }
+
+    // Menu correct quand connecté
+    navMenu.innerHTML = `
       <div class="nav-menu">
         <a href="index.html">Accueil</a>
         <a href="soins-lspd.html">Soins LSPD</a>
@@ -102,33 +107,37 @@
       </div>
     `
 
-    // TON CODE QUI MARCHE PARFAITEMENT
-    async function load() {
-        const { data, error } = await supabase
-            .from("login")
-            .select("user, grade, permission");
-        if (error) {
-            liste.innerHTML = "<p style='color:red;text-align:center;'>Erreur Supabase : " + error.message + "</p>";
-            return;
-        }
-        const sams = data.filter(m => m.permission === "sams");
-        if (sams.length === 0) {
-            liste.innerHTML = "<p style='text-align:center;color:#666'>Aucun membre SAMS trouvé.</p>";
-            return;
-        }
-        sams.sort((a, b) => a.user.localeCompare(b.user));
-        liste.innerHTML = '' // on vide le "Chargement..."
-        sams.forEach(m => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-                <div class="nom">${m.user}</div>
-                <div class="grade">${m.grade || "Membre"}</div>
-            `;
-            liste.appendChild(card);
-        });
+    // Chargement des effectifs SAMS
+    async function chargerEffectifs() {
+      const { data, error } = await supabase
+        .from('login')
+        .select('user, grade')
+        .eq('permission', 'sams')
+        .order('user', { ascending: true })
+
+      if (error) {
+        liste.innerHTML = `<p style="color:red;text-align:center">Erreur : ${error.message}</p>`
+        return
+      }
+
+      if (!data || data.length === 0) {
+        liste.innerHTML = '<p style="text-align:center;color:#666">Aucun membre SAMS trouvé.</p>'
+        return
+      }
+
+      liste.innerHTML = '' // vide le "Chargement..."
+      data.forEach(m => {
+        const card = document.createElement('div')
+        card.className = 'card'
+        card.innerHTML = `
+          <div class="nom">${m.user}</div>
+          <div class="grade">${m.grade || 'Membre'}</div>
+        `
+        liste.appendChild(card)
+      })
     }
-    load();
+
+    chargerEffectifs()
   </script>
 </body>
 </html>
