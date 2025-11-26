@@ -10,70 +10,88 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;color:#1f1f1f;min-height:100vh;position:relative}
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
-    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10}
-    header img{height:56px;border-radius:12px}
-    header h1{font-size:21px;font-weight:700;margin:0 12px}
-    .nav-menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10}
+    header img{height:58px;border-radius:14px}
+    header h1{font-size:22px;font-weight:700;margin-left:12px}
+    .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
     .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
-    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.3);border-radius:8px}
-    .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer;font-weight:600}
+    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.25)}
+    .logout-btn{background:#dc2626;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
     .container{max-width:1200px;margin:40px auto;padding:20px}
     .hero{text-align:center;padding:60px 20px}
-    .hero h1{font-size:3.6rem;color:var(--primary)}
-    .btn{background:var(--primary);color:white;padding:14px 32px;border-radius:12px;font-weight:600;cursor:pointer}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:60px}
-    .card{background:rgba(255,255,255,0.94);padding:28px;border-radius:16px;box-shadow:var(--shadow);text-align:center}
-    .card img{width:100%;height:180px;object-fit:cover;border-radius:12px}
-    footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;z-index:1000}
-    .modal-content{background:#fff;padding:32px;border-radius:16px;width:90%;max-width:400px;text-align:center}
+    .hero h1{font-size:3.6rem;color:var(--primary);margin-bottom:16px}
+    .hero p{font-size:1.3rem;max-width:800px;margin:0 auto 32px;line-height:1.7}
+    .btn{background:var(--primary);color:white;padding:14px 32px;border-radius:12px;font-weight:600;font-size:1.1rem;text-decoration:none;display:inline-block;margin:10px;cursor:pointer;transition:0.2s}
+    .btn:hover{background:var(--primary-dark);transform:translateY(-3px)}
+    .btn.secondary{background:transparent;border:2px solid white;color:white}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:60px}
+    .card{background:rgba(255,255,255,0.95);padding:30px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s}
+    .card:hover{transform:translateY(-8px)}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:16px}
+    footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white;margin-top:80px}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);align-items:center;justify-content:center;z-index:1000}
+    .modal-content{background:white;padding:40px;border-radius:16px;width:90%;max-width:420px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+    .modal input{width:100%;padding:14px;margin:12px 0;border-radius:10px;border:1px solid #ddd;font-size:16px}
+    .error{color:#c00;margin:10px 0;font-weight:600}
+    @media(max-width:768px){
+      header{flex-direction:column;text-align:center;gap:12px}
+      .hero h1{font-size:2.6rem}
+      .nav-menu{gap:12px;justify-content:center}
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center">
       <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
       <h1>San Andreas Medical Services</h1>
     </div>
-    <div id="navMenu"></div>
+    <div id="headerRight"></div>
   </header>
 
   <div class="container">
     <div class="hero">
       <h1>SAMS</h1>
-      <p>Le service médical d’urgence officiel de Los Santos.<br>Intervention rapide • Soins professionnels • 24/7</p>
-      <a href="#" class="btn">Appeler le 911</a>
+      <p>Le service médical d’urgence officiel de Los Santos.<br>Intervention rapide • Soins professionnels • Réanimation 24/7</p>
+      <a href="#" class="btn">Appeler le 911 (civils)</a>
     </div>
 
     <div class="cards">
       <div class="card">
         <img src="https://i.imgur.com/8gDUr3R.jpeg" alt="Ambulance">
         <h3>Intervention rapide</h3>
-        <p>Équipe déployée en moins de 3 minutes.</p>
+        <p>Équipe déployée en moins de 3 minutes sur tout le comté.</p>
       </div>
       <div class="card">
         <img src="https://i.imgur.com/o6GEeSn.jpeg" alt="Équipe">
         <h3>Personnel qualifié</h3>
-        <p>Médecins et ambulanciers formés RP.</p>
+        <p>Médecins, infirmiers et ambulanciers formés au RP médical.</p>
       </div>
       <div class="card">
         <img src="https://i.imgur.com/Es3XpTc.jpeg" alt="Hôpital">
         <h3>Infrastructures modernes</h3>
-        <p>Hôpital Pillbox Hill & Sandy Shores.</p>
+        <p>Hôpital Pillbox Hill & Sandy Shores équipés pour tous les soins.</p>
       </div>
+    </div>
+
+    <div style="text-align:center;margin:90px 0">
+      <h2 style="font-size:2.6rem;color:var(--primary);margin-bottom:24px">Rejoignez le SAMS</h2>
+      <a href="https://discord.gg/votreserveur" class="btn" style="font-size:1.3rem;padding:18px 44px">Postuler sur Discord</a>
     </div>
   </div>
 
-  <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
+  <footer><p>© 2025 SAMS - San Andreas Medical Services | FiveM RP</p></footer>
 
+  <!-- MODALE CONNEXION -->
   <div id="loginModal" class="modal">
     <div class="modal-content">
-      <h2 style="color:var(--primary)">Connexion personnel</h2>
+      <h2 style="color:var(--primary);margin-bottom:20px">Connexion personnel SAMS</h2>
       <input type="text" id="username" placeholder="Nom d'utilisateur">
       <input type="password" id="password" placeholder="Mot de passe">
       <button class="btn" onclick="login()">Se connecter</button>
-      <p id="errorMsg" style="color:red;margin-top:10px"></p>
+      <p class="error" id="errorMsg"></p>
+      <button style="margin-top:15px;background:none;border:none;color:#666;cursor:pointer" onclick="document.getElementById('loginModal').style.display='none'">Fermer</button>
     </div>
   </div>
 
@@ -81,12 +99,12 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     const supabase = createClient('https://gktawbaposndfxijkxdk.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk')
 
-    const nav = document.getElementById('navMenu')
-    const user = localStorage.getItem('sams_user')
+    const headerRight = document.getElementById('headerRight')
+    const userData = localStorage.getItem('sams_user')
 
-    if (user) {
-      const u = JSON.parse(user)
-      nav.innerHTML = `
+    if (userData) {
+      const user = JSON.parse(userData)
+      headerRight.innerHTML = `
         <div class="nav-menu">
           <a href="index.html" class="active">Accueil</a>
           <a href="soins-lspd.html">Soins LSPD</a>
@@ -95,16 +113,17 @@
         </div>
       `
     } else {
-      nav.innerHTML = `<button class="btn" style="background:transparent;border:2px solid white" onclick="document.getElementById('loginModal').style.display='flex'">Connexion personnel</button>`
+      headerRight.innerHTML = `<button class="btn secondary" onclick="document.getElementById('loginModal').style.display='flex'">Connexion personnel</button>`
     }
 
     window.login = async () => {
       const u = document.getElementById('username').value.trim()
       const p = document.getElementById('password').value
-      if (!u || !p) return document.getElementById('errorMsg').textContent = 'Champs requis'
+      if (!u || !p) return document.getElementById('errorMsg').textContent = 'Remplis tout'
       const { data, error } = await supabase.from('login').select('*').eq('user',u).eq('password',p).single()
       if (error || !data) return document.getElementById('errorMsg').textContent = 'Identifiants incorrects'
       localStorage.setItem('sams_user', JSON.stringify(data))
+      document.getElementById('loginModal').style.display = 'none'
       location.reload()
     }
   </script>
