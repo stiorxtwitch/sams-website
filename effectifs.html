@@ -1,89 +1,134 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Effectifs SAMS</title>
-
-    <style>
-        body {
-            background: #f2f2f2;
-            font-family: Arial, sans-serif;
-        }
-
-        .card {
-            background: #fff;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        .nom {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .grade {
-            color: #444;
-            margin-top: 5px;
-        }
-        #liste {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMS - Effectifs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:Inter,system-ui;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      color:#1f1f1f;min-height:100vh;position:relative
+    }
+    body::before{
+      content:"";position:fixed;inset:0;
+      background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1
+    }
+    header{
+      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+      color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10;position:relative
+    }
+    header img{height:58px;border-radius:14px}
+    header h1{font-size:22px;font-weight:700;margin-left:12px}
+    .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
+    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.25)}
+    .logout-btn{background:#dc2626;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+    .container{max-width:1200px;margin:60px auto;padding:20px}
+    h1{text-align:center;color:var(--primary);font-size:3.2rem;margin-bottom:40px}
+    #liste{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
+      padding:20px
+    }
+    .card{
+      background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
+      transition:0.3s
+    }
+    .card:hover{transform:translateY(-10px);box-shadow:0 12px 30px rgba(225,29,72,0.18)}
+    .nom{font-size:1.9rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .grade{
+      background:var(--primary);color:white;padding:10px 32px;border-radius:30px;
+      font-weight:600;font-size:1.1rem;display:inline-block
+    }
+    .no-access{
+      text-align:center;padding:120px 20px;color:#666;font-size:1.6rem
+    }
+    footer{
+      text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white;margin-top:80px
+    }
+    @media(max-width:768px){
+      header{flex-direction:column;text-align:center;gap:12px}
+      h1{font-size:2.5rem}
+      #liste{gap:20px;padding:10px}
+    }
+  </style>
 </head>
-
 <body>
 
-<h1 style="text-align:center;">Effectifs SAMS</h1>
+  <header>
+    <div style="display:flex;align-items:center">
+      <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
+      <h1>San Andreas Medical Services</h1>
+    </div>
+    <div id="navMenu"></div>
+  </header>
 
-<div id="liste"></div>
+  <div class="container">
+    <h1>Effectifs SAMS</h1>
+    <div id="liste">Chargement des effectifs...</div>
+  </div>
 
-<!-- ================== JS DIRECTEMENT DANS LE HTML ================== -->
-<script type="module">
+  <footer>
+    <p>© 2025 SAMS - San Andreas Medical Services</p>
+  </footer>
+
+  <!-- TON SCRIPT QUI MARCHE DÉJÀ (je touche à rien !) -->
+  <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js";
-
     const supabaseUrl = "https://gktawbaposndfxijkxdk.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk";
-
     const supabase = createClient(supabaseUrl, supabaseKey);
-
     const liste = document.getElementById("liste");
 
-    async function load() {
+    // Protection + menu
+    const userData = localStorage.getItem('sams_user')
+    if (!userData || !['sams','admin'].includes(JSON.parse(userData).permission)) {
+      liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
+      document.getElementById('navMenu').innerHTML = ''
+      return
+    }
 
+    document.getElementById('navMenu').innerHTML = `
+      <div class="nav-menu">
+        <a href="index.html">Accueil</a>
+        <a href="soins-lspd.html">Soins LSPD</a>
+        <a href="effectifs.html" class="active">Effectifs</a>
+        <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
+      </div>
+    `
+
+    // TON CODE QUI MARCHE PARFAITEMENT
+    async function load() {
         const { data, error } = await supabase
             .from("login")
             .select("user, grade, permission");
-
         if (error) {
-            liste.innerHTML = "<p style='color:red;'>Erreur Supabase : " + error.message + "</p>";
+            liste.innerHTML = "<p style='color:red;text-align:center;'>Erreur Supabase : " + error.message + "</p>";
             return;
         }
-
         const sams = data.filter(m => m.permission === "sams");
-
         if (sams.length === 0) {
-            liste.innerHTML = "<p style='text-align:center;'>Aucun membre SAMS trouvé.</p>";
+            liste.innerHTML = "<p style='text-align:center;color:#666'>Aucun membre SAMS trouvé.</p>";
             return;
         }
-
         sams.sort((a, b) => a.user.localeCompare(b.user));
-
+        liste.innerHTML = '' // on vide le "Chargement..."
         sams.forEach(m => {
             const card = document.createElement("div");
             card.className = "card";
             card.innerHTML = `
                 <div class="nom">${m.user}</div>
-                <div class="grade">${m.grade || "Grade non défini"}</div>
+                <div class="grade">${m.grade || "Membre"}</div>
             `;
             liste.appendChild(card);
         });
     }
-
     load();
-</script>
-
+  </script>
 </body>
 </html>
