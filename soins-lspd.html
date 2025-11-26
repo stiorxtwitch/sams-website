@@ -4,65 +4,159 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAMS - Soins LSPD</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--primary:#e91e63}
+    :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;min-height:100vh}
-    body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.70);backdrop-filter:blur(5px);z-index:-1}
-    
-    header{
-      background:linear-gradient(90deg,#c2185b,#e91e63);
-      padding:14px 30px;display:flex;align-items:center;justify-content:space-between;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);position:relative;z-index:1000;color:white !important;
+    body{
+      font-family:'Inter',sans-serif;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      color:#1f1f1f;min-height:100vh;position:relative
     }
-    header img{width:68px;height:68px;border-radius:50%;border:4px solid white}
-    header h1{margin:0 0 0 16px;font-size:24px;font-weight:700;color:white !important}
-    .nav-menu{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .nav-menu a{color:white;text-decoration:none;padding:10px 22px;border-radius:30px;font-weight:600;transition:.3s}
-    .nav-menu a:hover{background:rgba(255,255,255,0.2)}
-    .nav-menu a.active{background:rgba(255,255,255,0.3)}
-    .logout-btn{background:#d32f2f;color:white;border:none;padding:10px 26px;border-radius:30px;font-weight:600;cursor:pointer}
-    
-    .container{max-width:1000px;margin:100px auto 40px;padding:20px;text-align:center}
-    h1{font-size:3rem;color:var(--primary);margin-bottom:30px}
-    .no-access{padding:120px 20px;color:#666;font-size:1.6rem}
+    body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
+    header{
+      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+      color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:1000 !important;position:relative
+    }
+    header img{height:58px;border-radius:14px}
+    header h1{font-size:22px;font-weight:700;margin-left:12px;color:white !important;text-shadow:0 1px 2px rgba(0,0,0,0.3)}
+    .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+    .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:.2s}
+    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.25)}
+    .logout-btn{background:#dc2626;padding:8px 16px;border:none;border-radius:8px;color:white;cursor:pointer;font-weight:600}
+    .container{max-width:1200px;margin:60px auto;padding:20px}
+    h1{text-align:center;color:var(--primary);font-size:3.2rem;margin-bottom:40px}
+    #patientsList{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;padding:0 20px}
+    .patient-card{
+      background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
+      cursor:pointer;transition:.3s
+    }
+    .patient-card:hover{transform:translateY(-10px);box-shadow:0 14px 34px rgba(225,29,72,0.2)}
+    .patient-name{font-size:1.9rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;z-index:1000}
+    .modal-content{background:white;padding:40px;border-radius:16px;width:90%;max-width:500px;text-align:left;box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+    .modal-content h2{color:var(--primary);margin-bottom:20px;font-size:1.5rem}
+    .modal-content p{margin:12px 0;font-size:1.1rem;border-bottom:1px solid #eee;padding-bottom:8px}
+    .close-btn{background:var(--primary);color:white;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:20px}
+    .close-btn:hover{background:var(--primary-dark)}
+    .no-access{text-align:center;padding:120px 20px;color:#666;font-size:1.6rem}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
+    @media(max-width:768px){header{flex-direction:column;gap:12px;text-align:center}h1{font-size:2.5rem}}
   </style>
 </head>
 <body>
 
-<header>
-  <div style="display:flex;align-items:center">
-    <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
-    <h1>San Andreas Medical Services</h1>
+  <header>
+    <div style="display:flex;align-items:center">
+      <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
+      <h1>San Andreas Medical Services</h1>
+    </div>
+    <div id="navMenu"></div>
+  </header>
+
+  <div class="container">
+    <h1>Soins prodigués au LSPD</h1>
+    <div id="patientsList">Chargement des soins...</div>
   </div>
-  <div id="navMenu"></div>
-</header>
 
-<div class="container">
-  <h1>Soins prodigués au LSPD</h1>
-  <p style="font-size:1.4rem;color:#444">Page en construction – Historique des interventions à venir.</p>
-</div>
+  <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
-<footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
+  <!-- MODALE RÉCAP -->
+  <div id="recapModal" class="modal">
+    <div class="modal-content">
+      <h2>Récapitulatif du soin</h2>
+      <p><strong>SAMS :</strong> <span id="samsName"></span></p>
+      <p><strong>Date :</strong> <span id="date"></span></p>
+      <p><strong>Patient :</strong> <span id="patientNameId"></span></p>
+      <p><strong>Coût total :</strong> <span id="totalCost"></span> $</p>
+      <button class="close-btn" onclick="closeModal()">Fermer</button>
+    </div>
+  </div>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-  const supabase = createClient('https://gktawbaposndfxijkxdk.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk')
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-  const nav = document.getElementById('navMenu')
-  const userData = localStorage.getItem('sams_user')
+    // BASE 1 : LOGIN (pour vérification permissions)
+    const supabaseLogin = createClient(
+      'https://gktawbaposndfxijkxdk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+    )
 
-  if (!userData || !['lspd','sams'].includes(JSON.parse(userData).permission)) {
-    document.querySelector('.container').innerHTML = '<div class="no-access">Accès refusé – Réservé au LSPD & SAMS<br><a href="index.html" style="color:var(--primary);text-decoration:underline">Retour</a></div>'
-    nav.innerHTML = ''
-  } else {
-    const user = JSON.parse(userData)
-    let links = `<a href="index.html">Accueil</a><a href="soins-lspd.html" class="active">Soins LSPD</a>`
-    if (user.permission === 'sams') links += `<a href="effectifs.html">Effectifs</a>`
-    nav.innerHTML = `<div class="nav-menu">${links}<button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button></div>`
-  }
-</script>
+    // BASE 2 : PATIENTS (pour le listing)
+    const supabasePatients = createClient(
+      'https://sevrfgivcpefyykuffti.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNldnJmZ2l2Y3BlZnl5a3VmZnRpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI5NDI1NTMsImV4cCI6MjA3ODUxODU1M30.YZnkSHsVWKQEhfU7xYfWyTFmtkM28Zuzdu7Y1sjBXQc'
+    )
+
+    const navMenu = document.getElementById('navMenu')
+    const patientsList = document.getElementById('patientsList')
+    const userData = localStorage.getItem('sams_user')
+
+    // Protection d'accès (lspd ou sams seulement)
+    if (!userData || !['lspd', 'sams'].includes(JSON.parse(userData).permission)) {
+      patientsList.innerHTML = '<div class="no-access">Accès refusé – Réservé au LSPD et SAMS.<br><a href="index.html" style="color:var(--primary)">Retour à l\'accueil</a></div>'
+      navMenu.innerHTML = ''
+    } else {
+      const user = JSON.parse(userData)
+      navMenu.innerHTML = `
+        <div class="nav-menu">
+          <a href="index.html">Accueil</a>
+          <a href="soins-lspd.html" class="active">Soins LSPD</a>
+          <a href="effectifs.html">Effectifs</a>
+          <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
+        </div>
+      `
+
+      // Chargement du listing
+      async function loadPatients() {
+        const { data, error } = await supabasePatients
+          .from('patients')
+          .select('samsName, createdAt, patientNameId, totalCost, profession')
+          .ilike('profession', '%lspd%')  // Insensible à la casse : contient "lspd" ou "LSPD"
+
+        if (error) {
+          patientsList.innerHTML = `<p style="color:red;text-align:center">Erreur de chargement : ${error.message}</p>`
+          return
+        }
+
+        if (!data || data.length === 0) {
+          patientsList.innerHTML = '<p style="text-align:center;color:#666">Aucun soin LSPD trouvé.</p>'
+          return
+        }
+
+        patientsList.innerHTML = ''
+        data.forEach(patient => {
+          const card = document.createElement('div')
+          card.className = 'patient-card'
+          card.innerHTML = `<div class="patient-name">${patient.patientNameId}</div>`
+          card.onclick = () => openRecap(patient)
+          patientsList.appendChild(card)
+        })
+      }
+
+      loadPatients()
+    }
+
+    // Ouvrir la pop-up récap
+    function openRecap(patient) {
+      document.getElementById('samsName').textContent = patient.samsName || 'Non spécifié'
+      document.getElementById('date').textContent = new Date(patient.createdAt).toLocaleString('fr-FR')
+      document.getElementById('patientNameId').textContent = patient.patientNameId
+      document.getElementById('totalCost').textContent = patient.totalCost || 0
+      document.getElementById('recapModal').style.display = 'flex'
+    }
+
+    // Fermer la pop-up
+    function closeModal() {
+      document.getElementById('recapModal').style.display = 'none'
+    }
+
+    // Clic hors modale = fermer
+    document.getElementById('recapModal').onclick = (e) => {
+      if (e.target.id === 'recapModal') closeModal()
+    }
+  </script>
 </body>
 </html>
