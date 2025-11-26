@@ -11,16 +11,13 @@
     body{
       font-family:'Inter',sans-serif;
       background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
-      color:#1f1f1f;min-height:100vh;position:relative
+      min-height:100vh;position:relative;color:#1f1f1f
     }
-    body::before{
-      content:"";position:fixed;inset:0;
-      background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1
-    }
+    body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
     header{
       background:linear-gradient(90deg,var(--primary),var(--primary-dark));
       color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
-      box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10;position:relative
+      box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10
     }
     header img{height:58px;border-radius:14px}
     header h1{font-size:22px;font-weight:700;margin-left:12px}
@@ -30,27 +27,18 @@
     .logout-btn{background:#dc2626;padding:8px 16px;border:none;border-radius:8px;color:white;cursor:pointer;font-weight:600}
     .container{max-width:1200px;margin:60px auto;padding:20px}
     h1{text-align:center;color:var(--primary);font-size:3.2rem;margin-bottom:40px}
-    #liste{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;
-      padding:0 20px
-    }
+    #liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;padding:0 20px}
     .card{
       background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;
       box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
-      transition:transform .3s,box-shadow .3s
+      transition:.3s
     }
     .card:hover{transform:translateY(-10px);box-shadow:0 14px 34px rgba(225,29,72,0.2)}
     .nom{font-size:1.9rem;font-weight:700;color:var(--primary);margin-bottom:12px}
-    .grade{
-      background:var(--primary);color:white;padding:11px 34px;border-radius:30px;
-      font-weight:600;font-size:1.1rem;display:inline-block
-    }
+    .grade{background:var(--primary);color:white;padding:11px 34px;border-radius:30px;font-weight:600;font-size:1.1rem}
     .no-access{text-align:center;padding:120px 20px;color:#666;font-size:1.6rem}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    @media(max-width:768px){
-      header{flex-direction:column;text-align:center;gap:12px}
-      h1{font-size:2.5rem}
-    }
+    @media(max-width:768px){header{flex-direction:column;text-align:center;gap:12px}h1{font-size:2.5rem}}
   </style>
 </head>
 <body>
@@ -70,7 +58,6 @@
 
   <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
-  <!-- TOUT LE JS EST ICI, DANS LA PAGE (garanti fonctionnel) -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
@@ -82,62 +69,59 @@
     const navMenu = document.getElementById('navMenu')
     const liste = document.getElementById('liste')
 
-    // Vérification connexion
+    // === VÉRIFICATION DE LA CONNEXION ===
     const userData = localStorage.getItem('sams_user')
     if (!userData) {
       liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
       navMenu.innerHTML = ''
-      return
-    }
-
-    const user = JSON.parse(userData)
-    if (user.permission !== 'sams' && user.permission !== 'admin') {
-      liste.innerHTML = '<div class="no-access">Tu n’as pas la permission.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
-      navMenu.innerHTML = ''
-      return
-    }
-
-    // Menu correct quand connecté
-    navMenu.innerHTML = `
-      <div class="nav-menu">
-        <a href="index.html">Accueil</a>
-        <a href="soins-lspd.html">Soins LSPD</a>
-        <a href="effectifs.html" class="active">Effectifs</a>
-        <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
-      </div>
-    `
-
-    // Chargement des effectifs SAMS
-    async function chargerEffectifs() {
-      const { data, error } = await supabase
-        .from('login')
-        .select('user, grade')
-        .eq('permission', 'sams')
-        .order('user', { ascending: true })
-
-      if (error) {
-        liste.innerHTML = `<p style="color:red;text-align:center">Erreur : ${error.message}</p>`
-        return
-      }
-
-      if (!data || data.length === 0) {
-        liste.innerHTML = '<p style="text-align:center;color:#666">Aucun membre SAMS trouvé.</p>'
-        return
-      }
-
-      liste.innerHTML = '' // vide le "Chargement..."
-      data.forEach(m => {
-        const card = document.createElement('div')
-        card.className = 'card'
-        card.innerHTML = `
-          <div class="nom">${m.user}</div>
-          <div class="grade">${m.grade || 'Membre'}</div>
+    } else {
+      const user = JSON.parse(userData)
+      if (user.permission !== 'sams' && user.permission !== 'admin') {
+        liste.innerHTML = '<div class="no-access">Tu n’as pas la permission.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
+        navMenu.innerHTML = ''
+      } else {
+        // Menu quand tout est OK
+        navMenu.innerHTML = `
+          <div class="nav-menu">
+            <a href="index.html">Accueil</a>
+            <a href="soins-lspd.html">Soins LSPD</a>
+            <a href="effectifs.html" class="active">Effectifs</a>
+            <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
+          </div>
         `
-        liste.appendChild(card)
-      })
-    }
 
-    chargerEffectifs()
+        // === CHARGEMENT DES EFFECTIFS ===
+        async function loadEffectifs() {
+          const { data, error } = await supabase
+            .from('login')
+            .select('user, grade')
+            .eq('permission', 'sams')
+            .order('user', { ascending: true })
+
+          if (error) {
+            liste.innerHTML = `<p style="color:red;text-align:center">Erreur : ${error.message}</p>`
+            return
+          }
+          if (!data || data.length === 0) {
+            liste.innerHTML = '<p style="text-align:center;color:#666">Aucun membre SAMS trouvé.</p>'
+            return
+          }
+
+          liste.innerHTML = ''
+          data.forEach(m => {
+            const card = document.createElement('div')
+            card.className = 'card'
+            card.innerHTML = `
+              <div class="nom">${m.user}</div>
+              <div class="grade">${m.grade || 'Membre'}</div>
+            `
+            liste.appendChild(card)
+          })
+        }
+
+        loadEffectifs()
+      }
+    }
   </script>
 </body>
 </html>
