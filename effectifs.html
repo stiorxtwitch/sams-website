@@ -31,7 +31,6 @@
     .phone{font-size:1rem;color:#666;margin-top:8px;font-weight:500}
     .no-access{padding:120px 20px;color:#666;font-size:1.6rem}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    @media(max-width:768px){header{flex-direction:column;gap:15px;padding:20px}h1{font-size:2.4rem}}
   </style>
 </head>
 <body>
@@ -70,23 +69,41 @@
         <a href="index.html">Accueil</a>
         <a href="soins-lspd.html">Soins LSPD</a>
         <a href="effectifs.html" class="active">Effectifs</a>
-        <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
+        <button class="logout-btn" id="logoutBtn">Déconnexion</button>
       </div>
     `
 
-    // On marque l'utilisateur comme en ligne toutes les 20 secondes
-    async function setOnline() {
+    // ========== FONCTION DE DÉCONNEXION PROPRE ==========
+    async function logout() {
+      await supabase.from('login').update({ online: false }).eq('user', currentUser)
+      localStorage.removeItem('sams_user')
+      location.href = 'index.html'
+    }
+
+    document.getElementById('logoutBtn').onclick = logout
+
+    // ========== HEARTBEAT (reste en ligne) ==========
+    async function heartbeat() {
       await supabase.from('login').update({ online: true }).eq('user', currentUser)
     }
-    setOnline()
-    setInterval(setOnline, 20000)
+    heartbeat()
+    const interval = setInterval(heartbeat, 20000)
 
-    // On le marque hors ligne à la fermeture
+    // ========== Fermeture de l'onglet/page ==========
     window.addEventListener('beforeunload', () => {
-      navigator.sendBeacon && supabase.from('login').update({ online: false }).eq('user', currentUser)
+      clearInterval(interval)
+      // sendBeacon = fonctionne même si la page se ferme brutalement
+      if (navigator.sendBeacon) {
+        const data = JSON.stringify({ online: false })
+        const headers = { type: 'application/json' }
+        navigator.sendBeacon(
+          `https://gktawbaposndfxijkxdk.supabase.co/rest/v1/login?user=eq.${currentUser}&apikey=${supabase.supabaseKey}`,
+          data
+        )
+      }
     })
 
-    // Chargement des membres
+    // ========== Chargement des effectifs ==========
     async function loadEffectifs() {
       const { data } = await supabase
         .from('login')
@@ -102,8 +119,8 @@
       liste.innerHTML = ''
       data.forEach(m => {
         const statusImg = m.online 
-          ? 'https://i.imgur.com/zsE5oJ7.png'   // VERT = connecté
-          : 'https://i.imgur.com/qhgYsiF.png'   // ROUGE = hors ligne
+          ? 'https://i.imgur.com/zsE5oJ7.png'  // VERT
+          : 'https://i.imgur.com/qhgYsiF.png'  // ROUGE
 
         liste.innerHTML += `
           <div class="card">
@@ -117,13 +134,11 @@
     }
 
     loadEffectifs()
-    setInterval(loadEffectifs, 10000) // refresh toutes les 10 secondes
+    setInterval(loadEffectifs, 10000)
 
-    // Mise à jour en temps réel
+    // Realtime
     supabase.channel('login-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'login' }, () => {
-        loadEffectifs()
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'login' }, () => loadEffectifs())
       .subscribe()
   }
 </script>
