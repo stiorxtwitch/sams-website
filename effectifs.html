@@ -1,137 +1,133 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAMS - Effectifs</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --primary:#e11d48;--primary-light:#fee2e2;--primary-dark:#991b1b;
-      --border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08);
-    }
+    :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
     body{
-      font-family:Inter,system-ui;
-      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
       color:#1f1f1f;min-height:100vh;position:relative
     }
-    body::before{
-      content:"";position:fixed;inset:0;
-      background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1
-    }
+    body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
     header{
       background:linear-gradient(90deg,var(--primary),var(--primary-dark));
-      color:white;padding:14px 20px;display:flex;align-items:center;
-      justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10;position:relative
+      color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 4px 12px rgba(225,29,72,0.15);position:relative;z-index:10
     }
     header img{height:56px;border-radius:12px}
     header h1{font-size:21px;font-weight:700;margin:0 12px}
-    #userInfo{font-size:15px;display:flex;align-items:center;gap:12px}
-    .container{max-width:1000px;margin:40px auto;padding:20px}
-    h1{text-align:center;color:var(--primary);margin:20px 0 40px;font-size:2.8rem}
-    .effectif-list{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px
+    .nav-menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+    .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
+    .nav-menu a:hover{background:rgba(255,255,255,0.2)}
+    .nav-menu a.active{background:rgba(255,255,255,0.3);font-weight:700}
+    .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer;font-weight:600}
+    .container{max-width:1000px;margin:60px auto 40px;padding:20px}
+    h1{text-align:center;color:var(--primary);font-size:2.8rem;margin-bottom:40px}
+    .effectif-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px
     }
     .membre{
-      background:rgba(255,255,255,0.95);padding:20px;border-radius:14px;
-      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
-      transition:0.2s
+      background:rgba(255,255,255,0.95);padding:24px;border-radius:16px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s
     }
-    .membre:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(225,29,72,0.15)}
-    .membre .nom{
-      font-size:1.4rem;font-weight:700;color:var(--primary);margin-bottom:8px
-    }
+    .membre:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(225,29,72,0.18)}
+    .membre .nom{font-size:1.6rem;font-weight:700;color:var(--primary);margin-bottom:10px}
     .membre .grade{
-      background:var(--primary);color:white;padding:6px 16px;border-radius:20px;
-      font-size:0.9rem;font-weight:600;display:inline-block
+      background:var(--primary);color:white;padding:10px 24px;border-radius:30px;
+      font-size:1.1rem;font-weight:600;display:inline-block
     }
     .no-access{
-      text-align:center;padding:100px 20px;color:#666;font-size:1.3rem
+      text-align:center;padding:120px 20px;font-size:1.5rem;color:#666
     }
-    footer{text-align:center;padding:40px 20px;background:rgba(0,0,0,0.8);color:white;margin-top:80px}
+    footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
     @media(max-width:768px){
+      header{flex-direction:column;gap:12px;text-align:center}
+      .nav-menu{gap:12px;justify-content:center}
       h1{font-size:2.3rem}
-      .effectif-list{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
 
   <header>
-    <img src="https://i.imgur.com/N1tQTgU.png" alt="Logo SAMS">
-    <h1>San Andreas Medical Services</h1>
-    <div id="userInfo"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
+      <h1>San Andreas Medical Services</h1>
+    </div>
+    <div id="navMenu"></div>
   </header>
 
   <div class="container">
     <h1>Effectifs SAMS</h1>
-    <div id="effectifsContent"></div>
+    <div id="content"></div>
   </div>
 
   <footer>
     <p>© 2025 SAMS - San Andreas Medical Services</p>
   </footer>
 
-  <!-- SUPABASE + PROTECTION -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    
-    const supabase = createClient(
-      'https://gktawbaposndfxijkxdk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
-    )
+    const supabase = createClient('https://gktawbaposndfxijkxdk.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk')
 
-    const userInfo = document.getElementById('userInfo')
-    const content = document.getElementById('effectifsContent')
-    const currentUser = localStorage.getItem('sams_user')
+    const navMenu = document.getElementById('navMenu')
+    const content = document.getElementById('content')
+    const userData = localStorage.getItem('sams_user')
 
-    // === PROTECTION D'ACCÈS ===
-    if (!currentUser) {
-      content.innerHTML = '<div class="no-access">Accès refusé. <a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
+    // Protection : pas connecté ou pas sams/admin
+    if (!userData) {
+      content.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
       return
     }
-
-    const user = JSON.parse(currentUser)
+    const user = JSON.parse(userData)
     if (user.permission !== 'sams' && user.permission !== 'admin') {
-      content.innerHTML = '<div class="no-access">Tu n’as pas l’autorisation de voir les effectifs.<br><a href="index.html" style="color:var(--primary)">← Retour</a></div>'
+      content.innerHTML = '<div class="no-access">Tu n’as pas la permission de voir les effectifs.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
       return
     }
 
-    // === AFFICHAGE UTILISATEUR CONNECTÉ ===
-    userInfo.innerHTML = `
-      Connecté : <strong>${user.user}</strong> (${user.grade || '—'})
-      <button onclick="localStorage.removeItem('sams_user');location.href='index.html'" 
-              style="background:#dc2626;color:white;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;margin-left:10px;font-size:14px">
-        Déconnexion
-      </button>
+    // Menu de navigation
+    navMenu.innerHTML = `
+      <div class="nav-menu">
+        <a href="index.html">Accueil</a>
+        <a href="gestion.html">Gestion patients</a>
+        <a href="effectifs.html" class="active">Effectifs</a>
+        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+      </div>
     `
 
-    // === CHARGEMENT DES EFFECTIFS ===
+    window.logout = () => {
+      localStorage.removeItem('sams_user')
+      location.href = 'index.html'
+    }
+
+    // Chargement des effectifs (seulement permission = "sams")
     async function loadEffectifs() {
       const { data, error } = await supabase
         .from('login')
-        .select('user, grade, permission')
-        .in('permission', ['sams', 'admin'])
+        .select('user, grade')
+        .eq('permission', 'sams')
         .order('user', { ascending: true })
 
       if (error || !data || data.length === 0) {
-        content.innerHTML = '<p style="text-align:center;color:#666">Aucun membre trouvé.</p>'
+        content.innerHTML = '<p style="text-align:center;color:#666;margin-top:50px">Aucun membre SAMS pour le moment.</p>'
         return
       }
 
       const html = data.map(m => `
         <div class="membre">
           <div class="nom">${m.user}</div>
-          <div class="grade">${m.grade || 'Sans grade'}</div>
+          <div class="grade">${m.grade || 'Membre'}</div>
         </div>
       `).join('')
 
-      content.innerHTML = `<div class="effectif-list">${html}</div>`
+      content.innerHTML = `<div class="effectif-grid">${html}</div>`
     }
 
     loadEffectifs()
   </script>
-
 </body>
 </html>
