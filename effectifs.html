@@ -8,16 +8,9 @@
   <style>
     :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
-      color:#1f1f1f;min-height:100vh;position:relative
-    }
+    body{font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;color:#1f1f1f;min-height:100vh;position:relative}
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
-    header{
-      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
-      color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
-      box-shadow:0 4px 12px rgba(225,29,72,0.15);position:relative;z-index:10
-    }
+    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10;position:relative}
     header img{height:56px;border-radius:12px}
     header h1{font-size:21px;font-weight:700;margin:0 12px}
     .nav-menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
@@ -25,34 +18,19 @@
     .nav-menu a:hover{background:rgba(255,255,255,0.2)}
     .nav-menu a.active{background:rgba(255,255,255,0.3);font-weight:700}
     .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer;font-weight:600}
-    .container{max-width:1000px;margin:60px auto 40px;padding:20px}
-    h1{text-align:center;color:var(--primary);font-size:2.8rem;margin-bottom:40px}
-    .effectif-grid{
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px
-    }
-    .membre{
-      background:rgba(255,255,255,0.95);padding:24px;border-radius:16px;
-      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s
-    }
-    .membre:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(225,29,72,0.18)}
-    .membre .nom{font-size:1.6rem;font-weight:700;color:var(--primary);margin-bottom:10px}
-    .membre .grade{
-      background:var(--primary);color:white;padding:10px 24px;border-radius:30px;
-      font-size:1.1rem;font-weight:600;display:inline-block
-    }
-    .no-access{
-      text-align:center;padding:120px 20px;font-size:1.5rem;color:#666
-    }
+    .container{max-width:1100px;margin:60px auto 40px;padding:20px}
+    h1{text-align:center;color:var(--primary);font-size:2.8rem;margin-bottom:50px}
+    .effectif-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
+    .membre{background:rgba(255,255,255,0.96);padding:26px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s}
+    .membre:hover{transform:translateY(-8px)}
+    .membre .nom{font-size:1.65rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .membre .grade{background:var(--primary);color:white;padding:10px 26px;border-radius:30px;font-size:1.1rem;font-weight:600}
+    .no-access{text-align:center;padding:120px 20px;font-size:1.5rem;color:#666}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    @media(max-width:768px){
-      header{flex-direction:column;gap:12px;text-align:center}
-      .nav-menu{gap:12px;justify-content:center}
-      h1{font-size:2.3rem}
-    }
+    @media(max-width:768px){header{flex-direction:column;gap:12px;text-align:center}.nav-menu{gap:12px;justify-content:center}h1{font-size:2.3rem}}
   </style>
 </head>
 <body>
-
   <header>
     <div style="display:flex;align-items:center;gap:12px">
       <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
@@ -66,9 +44,7 @@
     <div id="content"></div>
   </div>
 
-  <footer>
-    <p>© 2025 SAMS - San Andreas Medical Services</p>
-  </footer>
+  <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -78,56 +54,31 @@
     const content = document.getElementById('content')
     const userData = localStorage.getItem('sams_user')
 
-    // Protection : pas connecté ou pas sams/admin
-    if (!userData) {
-      content.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour à l’accueil</a></div>'
-      return
-    }
-    const user = JSON.parse(userData)
-    if (user.permission !== 'sams' && user.permission !== 'admin') {
-      content.innerHTML = '<div class="no-access">Tu n’as pas la permission de voir les effectifs.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
+    if (!userData || !['sams','admin'].includes(JSON.parse(userData).permission)) {
+      content.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
       return
     }
 
-    // Menu de navigation
+    const user = JSON.parse(userData)
     navMenu.innerHTML = `
       <div class="nav-menu">
         <a href="index.html">Accueil</a>
-        <a href="gestion.html">Gestion patients</a>
+        <a href="soins-lspd.html">Soins LSPD</a>
         <a href="effectifs.html" class="active">Effectifs</a>
-        <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
       </div>
     `
 
-    window.logout = () => {
-      localStorage.removeItem('sams_user')
-      location.href = 'index.html'
-    }
-
-    // Chargement des effectifs (seulement permission = "sams")
-    async function loadEffectifs() {
-      const { data, error } = await supabase
-        .from('login')
-        .select('user, grade')
-        .eq('permission', 'sams')
-        .order('user', { ascending: true })
-
-      if (error || !data || data.length === 0) {
-        content.innerHTML = '<p style="text-align:center;color:#666;margin-top:50px">Aucun membre SAMS pour le moment.</p>'
-        return
-      }
-
-      const html = data.map(m => `
+    async function load() {
+      const { data } = await supabase.from('login').select('user,grade').eq('permission','sams').order('user',{ascending:true})
+      if (!data || data.length===0) { content.innerHTML = '<p style="text-align:center;color:#666;margin-top:50px">Aucun membre SAMS</p>'; return }
+      content.innerHTML = `<div class="effectif-grid">${data.map(m=>`
         <div class="membre">
           <div class="nom">${m.user}</div>
           <div class="grade">${m.grade || 'Membre'}</div>
-        </div>
-      `).join('')
-
-      content.innerHTML = `<div class="effectif-grid">${html}</div>`
+        </div>`).join('')}</div>`
     }
-
-    loadEffectifs()
+    load()
   </script>
 </body>
 </html>
