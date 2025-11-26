@@ -8,9 +8,17 @@
   <style>
     :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',sans-serif;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;min-height:100vh;position:relative;color:#1f1f1f}
+    body{
+      font-family:'Inter',sans-serif;
+      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
+      min-height:100vh;position:relative;color:#1f1f1f
+    }
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
-    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10}
+    header{
+      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+      color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10;position:relative
+    }
     header img{height:58px;border-radius:14px}
     header h1{font-size:22px;font-weight:700;margin-left:12px}
     .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
@@ -20,7 +28,11 @@
     .container{max-width:1200px;margin:60px auto;padding:20px}
     h1{text-align:center;color:var(--primary);font-size:3.2rem;margin-bottom:40px}
     #liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;padding:0 20px}
-    .card{background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:.3s}
+    .card{
+      background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;
+      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;
+      transition:.3s
+    }
     .card:hover{transform:translateY(-10px);box-shadow:0 14px 34px rgba(225,29,72,0.2)}
     .nom{font-size:1.9rem;font-weight:700;color:var(--primary);margin-bottom:12px}
     .grade{background:var(--primary);color:white;padding:11px 34px;border-radius:30px;font-weight:600;font-size:1.1rem}
@@ -40,44 +52,81 @@
 
   <div class="container">
     <h1>Effectifs SAMS</h1>
-    <div id="liste">Chargement...</div>
+    <div id="liste">Chargement des effectifs...</div>
   </div>
 
   <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
+  <!-- SCRIPT 100% CORRIGÉ (plus aucun "illegal return") -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    const supabase = createClient('https://gktawbaposndfxijkxdk.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInRlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk')
+
+    const supabase = createClient(
+      'https://gktawbaposndfxijkxdk.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+    )
 
     const header = document.getElementById('headerRight')
     const liste = document.getElementById('liste')
+
+    // === ON COMMENCE PAR VÉRIFIER LA CONNEXION ===
     const userData = localStorage.getItem('sams_user')
 
-    if (!userData || !['sams'].includes(JSON.parse(userData).permission)) {
-      liste.innerHTML = '<div class="no-access">Accès refusé – Réservé au personnel SAMS.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
+    // Si pas connecté ou pas SAMS → on bloque tout de suite
+    if (!userData) {
+      liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
       header.innerHTML = ''
-      return
-    }
+    } else {
+      const user = JSON.parse(userData)
 
-    const user = JSON.parse(userData)
-    header.innerHTML = `<div class="nav-menu">
-      <a href="index.html">Accueil</a>
-      <a href="soins-lspd.html">Soins LSPD</a>
-      <a href="effectifs.html" class="active">Effectifs</a>
-      <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
-    </div>`
+      // SEULEMENT les "sams" ont accès à cette page
+      if (user.permission !== 'sams') {
+        liste.innerHTML = '<div class="no-access">Accès refusé – Réservé au personnel SAMS.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
+        header.innerHTML = ''
+      } else {
+        // ==== MENU CORRECT POUR LES SAMS ====
+        header.innerHTML = `
+          <div class="nav-menu">
+            <a href="index.html">Accueil</a>
+            <a href="soins-lspd.html">Soins LSPD</a>
+            <a href="effectifs.html" class="active">Effectifs</a>
+            <button class="logout-btn" onclick="localStorage.removeItem('sams_user');location.href='index.html'">Déconnexion</button>
+          </div>
+        `
 
-    async function load() {
-      const { data } = await supabase.from('login').select('user,grade').eq('permission','sams').order('user',{ascending:true})
-      if (!data || data.length===0) { liste.innerHTML = '<p style="text-align:center;color:#666">Aucun membre SAMS.</p>'; return }
-      liste.innerHTML = ''
-      data.forEach(m => {
-        const card = document.createElement('div'); card.className = 'card'
-        card.innerHTML = `<div class="nom">${m.user}</div><div class="grade">${m.grade || 'Membre'}</div>`
-        liste.appendChild(card)
-      })
+        // ==== CHARGEMENT DES EFFECTIFS ====
+        async function loadEffectifs() {
+          const { data, error } = await supabase
+            .from('login')
+            .select('user', 'grade')
+            .eq('permission', 'sams')
+            .order('user', { ascending: true })
+
+          if (error) {
+            liste.innerHTML = `<p style="color:red;text-align:center">Erreur Supabase : ${error.message}</p>`
+            return
+          }
+
+          if (!data || data.length === 0) {
+            liste.innerHTML = '<p style="text-align:center;color:#666">Aucun membre SAMS pour le moment.</p>'
+            return
+          }
+
+          liste.innerHTML = ''
+          data.forEach(member => {
+            const card = document.createElement('div')
+            card.className = 'card'
+            card.innerHTML = `
+              <div class="nom">${member.user}</div>
+              <div class="grade">${member.grade || 'Membre'}</div>
+            `
+            liste.appendChild(card)
+          })
+        }
+
+        loadEffectifs()
+      }
     }
-    load()
   </script>
 </body>
 </html>
