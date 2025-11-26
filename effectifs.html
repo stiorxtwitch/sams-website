@@ -10,26 +10,29 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;color:#1f1f1f;min-height:100vh;position:relative}
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
-    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10}
-    header img{height:56px;border-radius:12px}
-    header h1{font-size:21px;font-weight:700;margin:0 12px}
-    .nav-menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(225,29,72,0.2);z-index:10}
+    header img{height:58px;border-radius:14px}
+    header h1{font-size:22px;font-weight:700;margin-left:12px}
+    .nav-menu{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
     .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
-    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.3)}
-    .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer}
-    .container{max-width:1100px;margin:80px auto 40px;padding:20px;text-align:center}
-    h1{font-size:3rem;color:var(--primary);margin-bottom:40px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-    .card{background:rgba(255,255,255,0.96);padding:30px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
-    .card .nom{font-size:1.7rem;font-weight:700;color:var(--primary);margin-bottom:12px}
-    .card .grade{background:var(--primary);color:white;padding:10px 30px;border-radius:30px;font-weight:600;display:inline-block}
-    .no-access{font-size:1.5rem;color:#666;margin-top:100px}
+    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.25)}
+    .logout-btn{background:#dc2626;color:white;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+    .container{max-width:1200px;margin:60px auto;padding:20px}
+    h1{text-align:center;color:var(--primary);font-size:3rem;margin-bottom:40px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px}
+    .card{background:rgba(255,255,255,0.96);padding:32px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s}
+    .card:hover{transform:translateY(-10px)}
+    .card .nom{font-size:1.8rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .card .grade{background:var(--primary);color:white;padding:10px 32px;border-radius:30px;font-weight:600;font-size:1.1rem}
+    .no-access{text-align:center;padding:120px 20px;color:#666;font-size:1.6rem}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
+    @media(max-width:768px){header{flex-direction:column;text-align:center;gap:12px}h1{font-size:2.4rem}}
   </style>
 </head>
 <body>
+
   <header>
-    <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center">
       <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
       <h1>San Andreas Medical Services</h1>
     </div>
@@ -38,10 +41,10 @@
 
   <div class="container">
     <h1>Effectifs SAMS</h1>
-    <div id="liste"></div>
+    <div id="liste" class="grid"></div>
   </div>
 
-  <footer><p>© 2025 SAMS</p></footer>
+  <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
@@ -49,11 +52,12 @@
 
     const nav = document.getElementById('navMenu')
     const liste = document.getElementById('liste')
-    const user = localStorage.getItem('sams_user')
+    const userData = localStorage.getItem('sams_user')
 
-    if (!user) return location.href = 'index.html'
-    const u = JSON.parse(user)
-    if (!['sams','admin'].includes(u.permission)) return location.href = 'index.html'
+    if (!userData || !['sams','admin'].includes(JSON.parse(userData).permission)) {
+      liste.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
+      return
+    }
 
     nav.innerHTML = `
       <div class="nav-menu">
@@ -65,23 +69,17 @@
     `
 
     async function load() {
-      const { data, error } = await supabase
-        .from('login')
-        .select('user, grade')
-        .eq('permission', 'sams')
-        .order('user', { ascending: true })
-
-      if (error || !data || data.length === 0) {
-        liste.innerHTML = '<p style="color:#666">Aucun membre SAMS trouvé.</p>'
+      const { data } = await supabase.from('login').select('user,grade').eq('permission','sams').order('user',{ascending:true})
+      if (!data || data.length===0) {
+        liste.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;margin:50px 0">Aucun membre SAMS trouvé.</p>'
         return
       }
-
-      liste.innerHTML = `<div class="grid">${data.map(m => `
-        <div class="card">
-          <div class="nom">${m.user}</div>
-          <div class="grade">${m.grade || 'Membre'}</div>
-        </div>
-      `).join('')}</div>`
+      data.forEach(m => {
+        const div = document.createElement('div')
+        div.className = 'card'
+        div.innerHTML = `<div class="nom">${m.user}</div><div class="grade">${m.grade || 'Membre'}</div>`
+        liste.appendChild(div)
+      })
     }
     load()
   </script>
