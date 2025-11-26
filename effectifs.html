@@ -8,45 +8,26 @@
   <style>
     :root{--primary:#e11d48;--primary-dark:#991b1b;--border:#fecaca;--shadow:0 6px 18px rgba(225,29,72,0.08)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:Inter,system-ui;
-      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
-      color:#1f1f1f;min-height:100vh;position:relative
-    }
+    body{font-family:Inter,system-ui;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;color:#1f1f1f;min-height:100vh;position:relative}
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.68);backdrop-filter:blur(4px);z-index:-1}
-    header{
-      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
-      color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
-      box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10;position:relative
-    }
+    header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 12px rgba(225,29,72,0.15);z-index:10}
     header img{height:56px;border-radius:12px}
     header h1{font-size:21px;font-weight:700;margin:0 12px}
     .nav-menu{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
     .nav-menu a{color:white;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;transition:0.2s}
-    .nav-menu a:hover{background:rgba(255,255,255,0.2)}
-    .nav-menu a.active{background:rgba(255,255,255,0.3);font-weight:700}
-    .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer;font-weight:600}
-    .container{max-width:1100px;margin:60px auto 40px;padding:20px}
-    h1{text-align:center;color:var(--primary);font-size:2.8rem;margin-bottom:50px}
-    .effectif-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}
-    .membre{
-      background:rgba(255,255,255,0.96);padding:26px;border-radius:16px;
-      box-shadow:var(--shadow);border:1px solid var(--border);text-align:center;transition:0.3s
-    }
-    .membre:hover{transform:translateY(-8px)}
-    .membre .nom{font-size:1.65rem;font-weight:700;color:var(--primary);margin-bottom:12px}
-    .membre .grade{background:var(--primary);color:white;padding:10px 26px;border-radius:30px;font-size:1.1rem;font-weight:600}
-    .no-access{text-align:center;padding:120px 20px;font-size:1.5rem;color:#666}
+    .nav-menu a:hover,.nav-menu a.active{background:rgba(255,255,255,0.3)}
+    .logout-btn{background:#dc2626;padding:8px 16px;border-radius:8px;border:none;color:white;cursor:pointer}
+    .container{max-width:1100px;margin:80px auto 40px;padding:20px;text-align:center}
+    h1{font-size:3rem;color:var(--primary);margin-bottom:40px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+    .card{background:rgba(255,255,255,0.96);padding:30px;border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
+    .card .nom{font-size:1.7rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .card .grade{background:var(--primary);color:white;padding:10px 30px;border-radius:30px;font-weight:600;display:inline-block}
+    .no-access{font-size:1.5rem;color:#666;margin-top:100px}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    @media(max-width:768px){
-      header{flex-direction:column;gap:12px;text-align:center}
-      .nav-menu{gap:12px;justify-content:center}
-      h1{font-size:2.3rem}
-    }
   </style>
 </head>
 <body>
-
   <header>
     <div style="display:flex;align-items:center;gap:12px">
       <img src="https://i.imgur.com/N1tQTgU.png" alt="SAMS">
@@ -57,40 +38,24 @@
 
   <div class="container">
     <h1>Effectifs SAMS</h1>
-    <div id="content">Chargement des effectifs...</div>
+    <div id="liste"></div>
   </div>
 
-  <footer>
-    <p>© 2025 SAMS - San Andreas Medical Services</p>
-  </footer>
+  <footer><p>© 2025 SAMS</p></footer>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    const supabase = createClient('https://gktawbaposndfxijkxdk.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk')
 
-    // TES VRAIES CLÉS (celle que tu viens de me donner)
-    const supabase = createClient(
-      'https://gktawbaposndfxijkxdk.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
-    )
+    const nav = document.getElementById('navMenu')
+    const liste = document.getElementById('liste')
+    const user = localStorage.getItem('sams_user')
 
-    const navMenu = document.getElementById('navMenu')
-    const content = document.getElementById('content')
-    const userData = localStorage.getItem('sams_user')
+    if (!user) return location.href = 'index.html'
+    const u = JSON.parse(user)
+    if (!['sams','admin'].includes(u.permission)) return location.href = 'index.html'
 
-    // Protection d'accès
-    if (!userData) {
-      content.innerHTML = '<div class="no-access">Accès refusé.<br><a href="index.html" style="color:var(--primary)">Retour accueil</a></div>'
-      return
-    }
-
-    const user = JSON.parse(userData)
-    if (user.permission !== 'sams' && user.permission !== 'admin') {
-      content.innerHTML = '<div class="no-access">Tu n’as pas la permission.<br><a href="index.html" style="color:var(--primary)">Retour</a></div>'
-      return
-    }
-
-    // Menu de navigation
-    navMenu.innerHTML = `
+    nav.innerHTML = `
       <div class="nav-menu">
         <a href="index.html">Accueil</a>
         <a href="soins-lspd.html">Soins LSPD</a>
@@ -99,35 +64,26 @@
       </div>
     `
 
-    // Chargement des effectifs → uniquement ceux avec permission = "sams"
-    async function loadEffectifs() {
+    async function load() {
       const { data, error } = await supabase
         .from('login')
         .select('user, grade')
-        .eq('permission', 'sams')           // UNIQUEMENT les vrais SAMS
+        .eq('permission', 'sams')
         .order('user', { ascending: true })
 
-      if (error) {
-        content.innerHTML = `<p style="color:red;text-align:center">Erreur de chargement : ${error.message}</p>`
+      if (error || !data || data.length === 0) {
+        liste.innerHTML = '<p style="color:#666">Aucun membre SAMS trouvé.</p>'
         return
       }
 
-      if (!data || data.length === 0) {
-        content.innerHTML = '<p style="text-align:center;color:#666;margin-top:50px">Aucun membre SAMS pour le moment.</p>'
-        return
-      }
-
-      const html = data.map(membre => `
-        <div class="membre">
-          <div class="nom">${membre.user}</div>
-          <div class="grade">${membre.grade || 'Membre'}</div>
+      liste.innerHTML = `<div class="grid">${data.map(m => `
+        <div class="card">
+          <div class="nom">${m.user}</div>
+          <div class="grade">${m.grade || 'Membre'}</div>
         </div>
-      `).join('')
-
-      content.innerHTML = `<div class="effectif-grid">${html}</div>`
+      `).join('')}</div>`
     }
-
-    loadEffectifs()
+    load()
   </script>
 </body>
 </html>
