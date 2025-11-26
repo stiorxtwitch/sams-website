@@ -6,22 +6,14 @@
   <title>SAMS - Effectifs</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--primary:#e91e63;--shadow:0 6px 20px rgba(233,30,99,0.15)}
+    :root{--primary:#e91e63;--green:#10b981;--red:#ef4444;--shadow:0 6px 20px rgba(233,30,99,0.15)}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{
-      font-family:'Inter',sans-serif;
-      background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;
-      min-height:100vh;color:#1f1f1f
-    }
+    body{font-family:'Inter',sans-serif;background:url('https://i.imgur.com/A6V1lhN.jpg') center/cover fixed;min-height:100vh;color:#1f1f1f}
     body::before{content:"";position:fixed;inset:0;background:rgba(255,255,255,0.70);backdrop-filter:blur(5px);z-index:-1}
     
-    header{
-      background:linear-gradient(90deg,#c2185b,#e91e63);
-      padding:14px 30px;display:flex;align-items:center;justify-content:space-between;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);position:relative;z-index:1000;color:white !important;
-    }
+    header{background:linear-gradient(90deg,#c2185b,#e91e63);padding:14px 30px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(0,0,0,0.2);position:relative;z-index:1000;color:white}
     header img{width:68px;height:68px;border-radius:50%;border:4px solid white}
-    header h1{margin:0 0 0 16px;font-size:24px;font-weight:700;color:white !important}
+    header h1{margin:0 0 0 16px;font-size:24px;font-weight:700;color:white}
     .nav-menu{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .nav-menu a{color:white;text-decoration:none;padding:10px 22px;border-radius:30px;font-weight:600;transition:.3s}
     .nav-menu a:hover{background:rgba(255,255,255,0.2)}
@@ -30,20 +22,17 @@
     
     .container{max-width:1100px;margin:90px auto 40px;padding:20px;text-align:center}
     h1{font-size:3rem;color:var(--primary);margin-bottom:50px}
-    #liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;justify-content:center}
-    .card{
-      background:white;padding:30px 20px;border-radius:20px;
-      box-shadow:var(--shadow);transition:.3s;border:1px solid #fce4ec
-    }
-    .card:hover{transform:translateY(-12px);box-shadow:0 16px 32px rgba(233,30,99,0.2)}
-    .nom{font-size:2rem;font-weight:700;color:var(--primary);margin-bottom:16px}
-    .grade{
-      background:var(--primary);color:white;padding:12px 30px;border-radius:50px;
-      font-weight:600;display:inline-block;min-width:140px
-    }
+    #liste{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;justify-content:center}
+    .card{background:white;padding:32px 20px;border-radius:20px;box-shadow:var(--shadow);transition:.3s;border:1px solid #fce4ec;position:relative}
+    .card:hover{transform:translateY(-12px);box-shadow:0 16px 32px rgba(233,30,99,0.25)}
+    .status{position:absolute;top:16px;right:16px;width:18px;height:18px;border-radius:50%;border:3px solid white;box-shadow:0 0 10px rgba(0,0,0,0.3)}
+    .online{background:var(--green)}
+    .offline{background:var(--red)}
+    .nom{font-size:2rem;font-weight:700;color:var(--primary);margin-bottom:12px}
+    .grade{background:var(--primary);color:white;padding:10px 28px;border-radius:50px;font-weight:600;display:inline-block;min-width:140px;margin:8px 0}
+    .phone{font-size:1rem;color:#666;margin-top:8px;font-weight:500}
     .no-access{padding:120px 20px;color:#666;font-size:1.6rem}
     footer{text-align:center;padding:40px;background:rgba(0,0,0,0.8);color:white}
-    @media(max-width:768px){header{flex-direction:column;gap:15px;padding:20px}h1{font-size:2.4rem}}
   </style>
 </head>
 <body>
@@ -58,7 +47,7 @@
 
 <div class="container">
   <h1>Effectifs SAMS</h1>
-  <div id="liste">Chargement...</div>
+  <div id="liste">Chargement des effectifs...</div>
 </div>
 
 <footer><p>© 2025 SAMS - San Andreas Medical Services</p></footer>
@@ -84,10 +73,27 @@
       </div>
     `
 
-    async function load() {
+    // Marque l'utilisateur comme en ligne dès qu'il arrive sur le site
+    async function setOnline() {
+      const user = JSON.parse(userData)
+      await supabase.from('login').update({ 
+        online: true, 
+        last_seen: new Date().toISOString() 
+      }).eq('user', user.user)
+    }
+    setOnline()
+
+    // Au départ (fermeture onglet/page)
+    window.addEventListener('beforeunload', () => {
+      const user = JSON.parse(userData)
+      supabase.from('login').update({ online: false }).eq('user', user.user)
+    })
+
+    // Chargement + mise à jour en temps réel
+    async function loadEffectifs() {
       const { data } = await supabase
         .from('login')
-        .select('user, grade')
+        .select('user, grade, phone, online, last_seen')
         .eq('permission', 'sams')
         .order('user', { ascending: true })
 
@@ -95,17 +101,30 @@
         liste.innerHTML = '<p style="color:#666">Aucun membre SAMS pour le moment.</p>'
         return
       }
+
       liste.innerHTML = ''
       data.forEach(m => {
+        const isOnline = m.online && m.last_seen && (Date.now() - new Date(m.last_seen).getTime() < 5 * 60 * 1000) // 5 min max
         liste.innerHTML += `
           <div class="card">
+            <div class="status ${isOnline ? 'online' : 'offline'}"></div>
             <div class="nom">${m.user}</div>
             <div class="grade">${m.grade || 'Membre'}</div>
+            <div class="phone">${m.phone || 'Non renseigné'}</div>
           </div>
         `
       })
     }
-    load()
+
+    loadEffectifs()
+    setInterval(loadEffectifs, 15000) // refresh toutes les 15 sec
+
+    // Écoute en temps réel (si quelqu’un se connecte/déconnecte ailleurs)
+    supabase.channel('public:login')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'login' }, () => {
+        loadEffectifs()
+      })
+      .subscribe()
   }
 </script>
 </body>
